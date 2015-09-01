@@ -1,0 +1,5 @@
+#org.springsource.ide.eclipse.gradle.core.preferences.GradleProjectPreferences
+#Wed Aug 19 11:28:28 IDT 2015
+build.family.org.gradle.tooling.model.eclipse.HierarchicalEclipseProject=;../trunk_svn/altair.simulator.core;../trunk_svn/altair.simulator.fucores;../trunk_svn/altair.skeleton.o2p;../trunk_svn/altair.util;../trunk_svn/altair.util.java6;../trunk_svn/altair.util.scala;
+org.springsource.ide.eclipse.gradle.linkedresources=
+org.springsource.ide.eclipse.gradle.rootprojectloc=

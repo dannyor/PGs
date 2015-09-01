@@ -1,0 +1,48 @@
+apply plugin: 'java'
+//apply plugin: 'org.akhikhl.wuff.eclipse-ide-bundle'
+
+//project.ext.sourceDirs = ['src/', 'testfiles/']
+apply from: '../trunk_svn/altair.ci/gradle/tasks.gradle'
+
+//apply plugin: 'org.akhikhl.wuff.eclipse-bundle'
+
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ["src"]
+        }
+    }
+}
+
+buildscript {
+	repositories {
+		//mavenLocal()
+		jcenter()
+	}
+
+	dependencies {
+		//classpath 'org.akhikhl.wuff:wuff-plugin:+'
+	}
+}
+
+
+//sourceSets.main.java.srcDirs = project.ext.sourceDirs
+//sourceSets.main.resources.srcDirs = ['testfiles/', project.ext.skeletonDirName]
+
+
+//sourceSets.main.resources.srcDirs = []
+
+// Seems like a Gradle bug...
+//sourceSets.main.resources.srcDirs = ['testfiles/', project.ext.skeletonDirName]
+subprojects { ext.sourceDirs = null }
+
+dependencies {
+	//compile project(':altair.util')
+	compile files('../trunk_svn/altair.util/bin')
+	compile files('../trunk_svn/altair.skeleton.o2p/bin')
+	//String prefix = project.ext.fullName
+	//compile project(prefix+':altair.skeleton.o2p')
+	//compile project(':altair.skeleton.o2p')
+	//compile project(':altair.util.java6')
+}

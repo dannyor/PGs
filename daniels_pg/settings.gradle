@@ -1,0 +1,24 @@
+rootProject.projectDir = new File("../", rootProject.name)
+
+def projectTreeRootDir = new File( "../trunk_svn" )
+// Include the other related projects
+include ':altair.util'
+project(':altair.util').projectDir = new File (projectTreeRootDir, 'altair.util')
+
+include ':altair.util.java6'
+project(':altair.util.java6').projectDir = new File (projectTreeRootDir, 'altair.util.java6')
+
+include ':altair.util.scala'
+project(':altair.util.scala').projectDir = new File (projectTreeRootDir, 'altair.util.scala')
+
+include ':altair.skeleton.o2p'
+project(':altair.skeleton.o2p').projectDir = new File (projectTreeRootDir, 'altair.skeleton.o2p')
+
+include ':altair.skeleton.o2p:altair.simulator.fucores'
+project(':altair.skeleton.o2p:altair.simulator.fucores').projectDir = new File (projectTreeRootDir, 'altair.simulator.fucores')
+
+include ':altair.skeleton.o2p:altair.simulator.fucores:altair.simulator.core'
+project(':altair.skeleton.o2p:altair.simulator.fucores:altair.simulator.core').projectDir = new File (projectTreeRootDir, 'altair.simulator.core')
+
+
+
