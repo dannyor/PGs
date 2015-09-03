@@ -1,7 +1,6 @@
 package altair.simulator.pg;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
@@ -57,36 +56,40 @@ public class SimpleRoutineExecution {
 		EventBus.INSTANCE.addListener(FurandMonitor.INSTANCE);
 		EventBus.INSTANCE.addListener(StatisticsMonitor.INSTANCE);
 	}
-	
+
 	@Test
 	public void ddd() throws IOException {
-		IAsip skeleton = AsipSkeletonXml.create(Files.getSystemResourceAsFile("skeletons/minimal_asip.xml"));
-//		File f2 = Files.getSystemResourceAsFile("mem/mems_griffin2.xml");
-		File f2 = new File("C:\\temp\\d\\mems_griffin_2.xml");
-		IMemSourceSkeleton memSkeletonXml = MemSkeletonXml.create(f2);
-		IMachineSkeleton machineDef = MachineSkeletonXml.create(Files.getSystemResourceAsFile("skeletons/machine_griffin3.xml"),
-				memSkeletonXml);
-		IAddressSpaceSkeleton addrSpDef = AddressSpaceSkeletonXml.create(Files.getSystemResourceAsFile("mem/address_space_griffin.xml"));
+		File skeletonFile = Files.getSystemResourceAsFile("skeletons/minimal_asip.xml");
+		File memFile = Files.getSystemResourceAsFile("mems_griffin_2.xml");
+		File bootCodeFile = Files.getSystemResourceAsFile("boot-code.acml");
+		File routineFile = Files.getSystemResourceAsFile("bbb.acml");
+		File machineFile = Files.getSystemResourceAsFile("skeletons/machine_griffin3.xml");
+		File addressSpaceFile = Files.getSystemResourceAsFile("mem/address_space_griffin.xml");
+
+		IAsip skeleton = AsipSkeletonXml.create(skeletonFile);
+		IMemSourceSkeleton memSkeletonXml = MemSkeletonXml.create(memFile);
+		IMachineSkeleton machineDef = MachineSkeletonXml.create(machineFile, memSkeletonXml);
+		IAddressSpaceSkeleton addrSpDef = AddressSpaceSkeletonXml.create(addressSpaceFile);
 
 		IAsipWrapper testAsip = new Asip("DDD", skeleton, machineDef, buildAsipMemView(machineDef, addrSpDef,
 				StringIdentifier.identifier("DDD")));
 
 		GlobalDefines globalDefines = buildGlobalDefines();
 
-		List<String> fnames = Collections.singletonList("A");
-		File f = new File("A:/j/altair/PGs/daniels_pg/bbb.acml");
-		IInstructionMemory insMem = InstructionMemoryFactory.INSTANCE.buildInstructionMemory(testAsip,
-				globalDefines, skeleton, fnames, Collections.singletonList(new FileInputStream(f)));
+		List<String> fnames = Lists.newArrayList("boot_code", "my_routine");
+		IInstructionMemory insMem = InstructionMemoryFactory.INSTANCE.buildInstructionMemory(testAsip, globalDefines,
+				skeleton, fnames, Files.filesToStreams(bootCodeFile, routineFile));
 		
 		testAsip.getLsiu().setInstructionMemory(insMem);
-		
+
 		// config external pc
-		
+
 		testAsip.getAsipDispatcher().startAsipRun();
-		while(testAsip.getAsipDispatcher().executeInstruction()){
+		while (testAsip.getAsipDispatcher().executeInstruction()) {
 			IReg pc = testAsip.getAsipPcu().findReg(StringIdentifier.identifier("PC"));
 			System.out.println(pc.getUnsignedValue());
-		};
+		}
+		;
 		System.out.println(StatisticsMonitor.INSTANCE.getFatalCount());
 		System.out.println(FurandMonitor.INSTANCE.getMonitorData());
 	}
@@ -125,15 +128,14 @@ public class SimpleRoutineExecution {
 		return new GlobalDefines(globalDefines);
 	}
 
-	private IMemView buildAsipMemView(IMachineSkeleton machineDefinition,
-			IAddressSpaceSkeleton addressSpaceDefinition, IIdentifier asipID) {
+	private IMemView buildAsipMemView(IMachineSkeleton machineDefinition, IAddressSpaceSkeleton addressSpaceDefinition,
+			IIdentifier asipID) {
 		// build asip mem view based on definitions
 		IMemView asipMemView;
 		Collection<IMemViewSkeleton> asipMemViews = machineDefinition.getEngineMemViews(asipID);
 		if (asipMemViews.size() != 1) {
-			GeneralLogEventPublisher.FATAL.publishEvent(Joiner.on("")
-					.join("Asip ", asipID, " not mapped to a single memview, instead mapped to ",
-							asipMemViews.size(), " memviews\n"));
+			GeneralLogEventPublisher.FATAL.publishEvent(Joiner.on("").join("Asip ", asipID,
+					" not mapped to a single memview, instead mapped to ", asipMemViews.size(), " memviews\n"));
 			asipMemView = MemView.zeroMemView;
 		} else {
 			IMemViewSkeleton memViewDef = asipMemViews.iterator().next();
@@ -149,15 +151,11 @@ public class SimpleRoutineExecution {
 				} else {
 					MemTypeEnum memType = MemTypeEnum.values()[memSkel.getMemProperties().iterator().next()
 							.getMemType().ordinal()];
-					IMem newMem = new Mem(
-							memSkel.getIdentifier().toString(),
-							memMipsAddr.getBaseAddress(),
-							memSkel.getSize(),
-							memSkel.getMemCellWidth(),
-							memType,
-							RegisterTypeEnum.values()[memSkel.getMemCellType().ordinal()],
-							RegisterTransferMethodEnum.values()[memSkel.getMemCellTransferMethod().ordinal()],
-							RegisterPermissionEnum.values()[memSkel.getMemCellPermissionType().ordinal()]);
+					IMem newMem = new Mem(memSkel.getIdentifier().toString(), memMipsAddr.getBaseAddress(),
+							memSkel.getSize(), memSkel.getMemCellWidth(), memType, RegisterTypeEnum.values()[memSkel
+									.getMemCellType().ordinal()], RegisterTransferMethodEnum.values()[memSkel
+									.getMemCellTransferMethod().ordinal()], RegisterPermissionEnum.values()[memSkel
+									.getMemCellPermissionType().ordinal()]);
 					memsOffsets.add(new MemOffset(newMem, memViewDefProp.getVirtualAddressOffset()));
 				}
 			}

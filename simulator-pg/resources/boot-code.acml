@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<asip_src>
+  <styleBank>
+    <style name="default" id="default-id">
+      <font bold="false" italic="false" />
+      <background red="255" blue="255" green="255" />
+      <foreground red="0" blue="0" green="0" />
+    </style>
+    <style name="comment" id="comment-id">
+      <font bold="false" italic="false" />
+      <background red="240" blue="240" green="240" />
+      <foreground red="128" blue="128" green="128" />
+    </style>
+    <style name="disabled field" id="disabled-field-id">
+      <font bold="false" italic="false" />
+      <background red="240" blue="240" green="240" />
+      <foreground red="128" blue="128" green="128" />
+    </style>
+  </styleBank>
+  <sorts />
+  <defines />
+  <codes active="code">
+    <code name="code">
+      <instructions>
+        <inst type="CODE">
+          <label />
+          <fu_inst>
+            <name>PCU</name>
+            <style />
+            <command>
+              <command_op style="default-id">NOP</command_op>
+              <comment />
+            </command>
+            <comment />
+          </fu_inst>
+        </inst>
+        <inst type="CODE">
+          <label />
+          <fu_inst>
+            <name>PCU</name>
+            <style />
+            <command>
+              <command_op style="default-id">SLEEP</command_op>
+              <comment />
+            </command>
+            <comment />
+          </fu_inst>
+        </inst>
+        <inst type="CODE">
+          <label />
+          <fu_inst>
+            <name>PCU</name>
+            <style />
+            <command>
+              <command_op style="default-id">CSTOP</command_op>
+              <comment />
+            </command>
+            <comment />
+          </fu_inst>
+        </inst>
+        <inst type="CODE">
+          <label />
+          <fu_inst>
+            <name>PCU</name>
+            <style />
+            <command>
+              <command_op style="default-id">NOP</command_op>
+              <comment />
+            </command>
+            <comment />
+          </fu_inst>
+        </inst>
+      </instructions>
+    </code>
+  </codes>
+  <name>boot-code</name>
+  <comment />
+  <Regs />
+  <external_labels />
+</asip_src>
+
