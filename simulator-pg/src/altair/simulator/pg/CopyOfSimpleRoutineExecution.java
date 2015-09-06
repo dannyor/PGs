@@ -36,7 +36,6 @@ import altair.simulator.iss.asip.IAsipWrapper;
 import altair.simulator.iss.asip.lsiu.instructionmemory.IInstructionMemory;
 import altair.simulator.iss.asip.routineparser.GlobalDefines;
 import altair.simulator.iss.asip.routineparser.InstructionMemoryFactory;
-import altair.simulator.iss.fu.ICommandableFu;
 import altair.simulator.utils.logging.bus.EventBus;
 import altair.simulator.utils.logging.monitor.FurandMonitor;
 import altair.simulator.utils.logging.monitor.StatisticsMonitor;
@@ -50,78 +49,49 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-public class SimpleRoutineExecution {
-
-	File skeletonFile;
-	File memFile;
-	File bootCodeFile;
-	File routineFile;
-	File machineFile;
-	File addressSpaceFile;
-
-	IAsip skeleton;
-	IMemSourceSkeleton memSkeletonXml;
-	IMachineSkeleton machineDef;
-	IAddressSpaceSkeleton addrSpDef;
-	IAsipWrapper asip;
-	private IInstructionMemory instructionMem;
+public class CopyOfSimpleRoutineExecution {
 
 	@Before
-	public void prepare() {
+	public void pre() {
 		EventBus.INSTANCE.addListener(FurandMonitor.INSTANCE);
 		EventBus.INSTANCE.addListener(StatisticsMonitor.INSTANCE);
-		loadResources();
-		buildAsip();
-		GlobalDefines globalDefines = buildGlobalDefines();
-		buildInstructionMemory(globalDefines);
 	}
 
 	@Test
-	public void runAsip() throws IOException {
+	public void ddd() throws IOException {
+		File skeletonFile = Files.getSystemResourceAsFile("skeletons/minimal_asip.xml");
+		File memFile = Files.getSystemResourceAsFile("mems_griffin_2.xml");
+		File bootCodeFile = Files.getSystemResourceAsFile("boot-code.acml");
+		File routineFile = Files.getSystemResourceAsFile("bbb.acml");
+		File machineFile = Files.getSystemResourceAsFile("skeletons/machine_griffin3.xml");
+		File addressSpaceFile = Files.getSystemResourceAsFile("mem/address_space_griffin.xml");
 
-		asip.getAsipDispatcher().startAsipRun();
-		while (asip.getAsipDispatcher().executeInstruction()) {
-			IReg pc = asip.getAsipPcu().findReg(StringIdentifier.identifier("PC"));
-			System.out.println(pc.getUnsignedValue());
-		}
+		IAsip skeleton = AsipSkeletonXml.create(skeletonFile);
+		IMemSourceSkeleton memSkeletonXml = MemSkeletonXml.create(memFile);
+		IMachineSkeleton machineDef = MachineSkeletonXml.create(machineFile, memSkeletonXml);
+		IAddressSpaceSkeleton addrSpDef = AddressSpaceSkeletonXml.create(addressSpaceFile);
 
-		System.out.println(">> "+instructionMem.getRoutineIndex("bbb"));
-		IReg externalPc = asip.getAsipPcu().findReg(StringIdentifier.identifier("EXTERNAL_PC"));
-		externalPc.setUnsignedValue(instructionMem.getRoutineIndex("bbb"));
-		asip.getAsipDispatcher().startAsipRun();
-		while (asip.getAsipDispatcher().executeInstruction()) {
-			IReg pc = asip.getAsipPcu().findReg(StringIdentifier.identifier("PC"));
-			System.out.println(pc.getUnsignedValue());
-		}
+		IAsipWrapper asip = new Asip("DDD", skeleton, machineDef, buildAsipMemView(machineDef, addrSpDef,
+				StringIdentifier.identifier("DDD")));
 
-		System.out.println(StatisticsMonitor.INSTANCE.getFatalCount());
-		System.out.println(FurandMonitor.INSTANCE.getMonitorData());
-	}
+		GlobalDefines globalDefines = buildGlobalDefines();
 
-	private void buildInstructionMemory(GlobalDefines globalDefines) {
-		instructionMem = InstructionMemoryFactory.INSTANCE.buildInstructionMemory(asip, globalDefines, skeleton,
+		IInstructionMemory insMem = InstructionMemoryFactory.INSTANCE.buildInstructionMemory(asip, globalDefines, skeleton,
 				Resources.create(bootCodeFile, routineFile));
 
-		asip.getLsiu().setInstructionMemory(instructionMem);
-	}
+		
+		asip.getLsiu().setInstructionMemory(insMem);
 
-	private void buildAsip() {
-		skeleton = AsipSkeletonXml.create(skeletonFile);
-		memSkeletonXml = MemSkeletonXml.create(memFile);
-		machineDef = MachineSkeletonXml.create(machineFile, memSkeletonXml);
-		addrSpDef = AddressSpaceSkeletonXml.create(addressSpaceFile);
+		// config external pc
 
-		asip = new Asip("DDD", skeleton, machineDef, buildAsipMemView(machineDef, addrSpDef,
-				StringIdentifier.identifier("DDD")));
-	}
-
-	private void loadResources() {
-		skeletonFile = Files.getSystemResourceAsFile("skeletons/minimal_asip.xml");
-		memFile = Files.getSystemResourceAsFile("mems_griffin_2.xml");
-		bootCodeFile = Files.getSystemResourceAsFile("boot-code.acml");
-		routineFile = Files.getSystemResourceAsFile("bbb.acml");
-		machineFile = Files.getSystemResourceAsFile("skeletons/machine_griffin3.xml");
-		addressSpaceFile = Files.getSystemResourceAsFile("mem/address_space_griffin.xml");
+		asip.getAsipDispatcher().startAsipRun();
+		while (asip.getAsipDispatcher().executeInstruction()) {
+			IReg pc = asip.getAsipPcu().findReg(StringIdentifier.identifier("PC"));
+			System.out.println(pc.getUnsignedValue());
+		}
+		;
+		System.out.println(StatisticsMonitor.INSTANCE.getFatalCount());
+		System.out.println(FurandMonitor.INSTANCE.getMonitorData());
 	}
 
 	private GlobalDefines buildGlobalDefines() {
