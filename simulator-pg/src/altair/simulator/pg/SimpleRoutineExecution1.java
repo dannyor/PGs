@@ -36,7 +36,7 @@ import altair.simulator.iss.asip.IAsipWrapper;
 import altair.simulator.iss.asip.lsiu.instructionmemory.IInstructionMemory;
 import altair.simulator.iss.asip.routineparser.GlobalDefines;
 import altair.simulator.iss.asip.routineparser.InstructionMemoryFactory;
-import altair.simulator.iss.fu.ICommandableFu;
+import altair.simulator.iss.fu.IFu;
 import altair.simulator.utils.logging.bus.EventBus;
 import altair.simulator.utils.logging.monitor.FurandMonitor;
 import altair.simulator.utils.logging.monitor.StatisticsMonitor;
@@ -50,7 +50,7 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-public class SimpleRoutineExecution {
+public class SimpleRoutineExecution1 {
 
 	File skeletonFile;
 	File memFile;
@@ -72,14 +72,13 @@ public class SimpleRoutineExecution {
 		EventBus.INSTANCE.addListener(StatisticsMonitor.INSTANCE);
 		loadResources();
 		buildAsip();
-		GlobalDefines globalDefines = buildGlobalDefines();
+		buildGlobalDefines();
 		buildInstructionMemory(globalDefines);
 	}
 
 	@Test
 	public void runAsip() throws IOException {
 
-		asip.getAsipDispatcher().startAsipRun();
 		while (asip.getAsipDispatcher().executeInstruction()) {
 			IReg pc = asip.getAsipPcu().findReg(StringIdentifier.identifier("PC"));
 			System.out.println(pc.getUnsignedValue());
@@ -94,6 +93,9 @@ public class SimpleRoutineExecution {
 			System.out.println(pc.getUnsignedValue());
 		}
 
+		IFu imm0 = asip.getFu(StringIdentifier.identifier("IMM0"));
+		System.out.println(imm0.findReg(StringIdentifier.identifier("Q")));
+		
 		System.out.println(StatisticsMonitor.INSTANCE.getFatalCount());
 		System.out.println(FurandMonitor.INSTANCE.getMonitorData());
 	}
@@ -110,7 +112,6 @@ public class SimpleRoutineExecution {
 		memSkeletonXml = MemSkeletonXml.create(memFile);
 		machineDef = MachineSkeletonXml.create(machineFile, memSkeletonXml);
 		addrSpDef = AddressSpaceSkeletonXml.create(addressSpaceFile);
-
 		asip = new Asip("DDD", skeleton, machineDef, buildAsipMemView(machineDef, addrSpDef,
 				StringIdentifier.identifier("DDD")));
 	}
@@ -119,43 +120,19 @@ public class SimpleRoutineExecution {
 		skeletonFile = Files.getSystemResourceAsFile("skeletons/minimal_asip.xml");
 		memFile = Files.getSystemResourceAsFile("mems_griffin_2.xml");
 		bootCodeFile = Files.getSystemResourceAsFile("boot-code.acml");
-		routineFile = Files.getSystemResourceAsFile("bbb.acml");
+		routineFile = Files.getSystemResourceAsFile("routine1.acml");
 		machineFile = Files.getSystemResourceAsFile("skeletons/machine_griffin3.xml");
 		addressSpaceFile = Files.getSystemResourceAsFile("mem/address_space_griffin.xml");
 	}
 
-	private GlobalDefines buildGlobalDefines() {
-		Map<String, Integer> globalDefines = Maps.newHashMap();
-		globalDefines.put("SFBC_LLROUT_MASK", 0xFEFF);
-		globalDefines.put("SFBC_ALU0_MASK", 0xFBFF);
-		globalDefines.put("SFBC_SNIFFER_ADDRESS", 0xFFFF);
-		globalDefines.put("SFBC_N_BUILD_IN_COUPLES", 6);
-		globalDefines.put("SFBC_Y_INC", 100);
-		globalDefines.put("SFBC_Y11_BASE", 101);
-		globalDefines.put("SFBC_Y12_BASE", 102);
-		globalDefines.put("SFBC_Y21_BASE", 103);
-		globalDefines.put("SFBC_Y22_BASE", 104);
-		globalDefines.put("SFBC_H11_BASE", 105);
-		globalDefines.put("SFBC_H12_BASE", 106);
-		globalDefines.put("SFBC_H21_BASE", 107);
-		globalDefines.put("SFBC_H22_BASE", 108);
-		globalDefines.put("SFBC_GAIN0_PTR", 109);
-		globalDefines.put("SFBC_GAIN1_PTR", 110);
-		globalDefines.put("SFBC_TRASH_LLRS", 111);
-		globalDefines.put("SFBC_HARD_VALUES_BASE", 112);
-		globalDefines.put("SFBC_HARD_VALUES_OUTPUT_INC", 113);
-		globalDefines.put("SFBC_N_DATA_COUPLES_PER_SCH", 114);
-		globalDefines.put("SFBC_LLROUT_BOOST", 115);
-		globalDefines.put("SFBC_DIV_CONST_NORM", 116);
-		globalDefines.put("SFBC_CONSTELLATION", 117);
-		globalDefines.put("SFBC_NORM_FACTOR_SHIFT", 118);
-		globalDefines.put("SFBC_DIV_SIGMA_BASE", 119);
-		globalDefines.put("SFBC_N_SCH", 120);
-		globalDefines.put("SFBC_CONST_NORM2", 121);
-		globalDefines.put("SFBC_CMAC0_SHSET", 122);
-		globalDefines.put("SFBC_CMAC1_SHSET", 123);
-		globalDefines.put("SFBC_CMAC2_SHSET", 124);
-		return new GlobalDefines(globalDefines);
+	GlobalDefines globalDefines;
+	
+	private void buildGlobalDefines() {
+		Map<String, Integer> globalDefinesMap = Maps.newHashMap();
+		globalDefinesMap.put("BBB_NUM1", 0xF0);
+		globalDefinesMap.put("BBB_NUM2", 0xF1);
+		globalDefinesMap.put("BBB_OUT", 0xFFFF);
+		globalDefines =  new GlobalDefines(globalDefinesMap);
 	}
 
 	private IMemView buildAsipMemView(IMachineSkeleton machineDefinition, IAddressSpaceSkeleton addressSpaceDefinition,

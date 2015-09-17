@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<asip_src>
+  <styleBank>
+    <style name="default" id="default-id">
+      <font bold="false" italic="false" />
+      <background red="255" blue="255" green="255" />
+      <foreground red="0" blue="0" green="0" />
+    </style>
+    <style name="comment" id="comment-id">
+      <font bold="false" italic="false" />
+      <background red="240" blue="240" green="240" />
+      <foreground red="128" blue="128" green="128" />
+    </style>
+    <style name="disabled field" id="disabled-field-id">
+      <font bold="false" italic="false" />
+      <background red="240" blue="240" green="240" />
+      <foreground red="128" blue="128" green="128" />
+    </style>
+  </styleBank>
+  <sorts />
+  <defines />
+  <codes active="code">
+    <code name="code">
+      <instructions>
+        <inst type="CODE">
+          <label />
+          <fu_inst>
+            <name>RU0</name>
+            <command>
+              <command_op style="default-id">LAT</command_op>
+              <comment />
+            </command>
+            <comment />
+            <operand>
+              <name>A</name>
+              <icm style="default-id">IMM0.Q</icm>
+              <comment />
+            </operand>
+          </fu_inst>
+          <fu_inst>
+            <name>IMM0</name>
+            <style />
+            <command>
+              <command_op style="default-id">4</command_op>
+              <comment />
+            </command>
+            <comment />
+          </fu_inst>
+        </inst>
+        <inst type="CODE">
+          <label />
+          <fu_inst>
+            <name>ALU0</name>
+            <command>
+              <command_op style="default-id">ADD</command_op>
+              <comment />
+            </command>
+            <comment />
+            <operand>
+              <name>A</name>
+              <icm style="default-id">RU0.Q</icm>
+              <comment />
+            </operand>
+            <operand>
+              <name>B</name>
+              <icm style="default-id">IMM0.Q</icm>
+              <comment />
+            </operand>
+          </fu_inst>
+          <fu_inst>
+            <name>IMM0</name>
+            <style />
+            <command>
+              <command_op style="default-id">3</command_op>
+              <comment />
+            </command>
+            <comment />
+          </fu_inst>
+        </inst>
+        <inst type="CODE">
+          <label />
+        </inst>
+        <inst type="CODE">
+          <label />
+        </inst>
+        <inst type="CODE">
+          <label />
+          <fu_inst>
+            <name>PCU</name>
+            <command>
+              <command_op style="default-id">SLEEP</command_op>
+              <comment />
+            </command>
+            <comment />
+          </fu_inst>
+        </inst>
+        <inst type="CODE">
+          <label />
+          <fu_inst>
+            <name>PCU</name>
+            <command>
+              <command_op style="default-id">CSTOP</command_op>
+              <comment />
+            </command>
+            <comment />
+          </fu_inst>
+        </inst>
+        <inst type="CODE">
+          <label />
+          <fu_inst>
+            <name>PCU</name>
+            <command>
+              <command_op style="default-id">NOP</command_op>
+              <comment />
+            </command>
+            <comment />
+          </fu_inst>
+        </inst>
+      </instructions>
+    </code>
+  </codes>
+  <name>r12</name>
+  <comment />
+  <Regs />
+  <external_labels />
+</asip_src>
+

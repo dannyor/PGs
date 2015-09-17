@@ -1,0 +1,604 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<asip_src>
+  <styleBank>
+    <style name="default" id="default-id">
+      <font bold="false" italic="false" />
+      <background red="255" blue="255" green="255" />
+      <foreground red="0" blue="0" green="0" />
+    </style>
+    <style name="comment" id="comment-id">
+      <font bold="false" italic="false" />
+      <background red="240" blue="240" green="240" />
+      <foreground red="128" blue="128" green="128" />
+    </style>
+    <style name="disabled field" id="disabled-field-id">
+      <font bold="false" italic="false" />
+      <background red="240" blue="240" green="240" />
+      <foreground red="128" blue="128" green="128" />
+    </style>
+  </styleBank>
+  <sorts>
+    <sort name="dtyhty">PCU,ALU0,RU0,LSU0,IMM0,</sort>
+  </sorts>
+  <defines>
+    <define>
+      <name>BBB_NUM1</name>
+      <value />
+      <comment />
+    </define>
+    <define>
+      <name>BBB_NUM2</name>
+      <value />
+      <comment />
+    </define>
+    <define>
+      <name>BBB_OUT</name>
+      <value />
+      <comment />
+    </define>
+  </defines>
+  <codes active="code">
+    <code name="code">
+      <instructions>
+        <inst type="CODE">
+          <label />
+          <fu_inst>
+            <name>PCU</name>
+            <command>
+              <command_op style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </command>
+            <comment />
+            <operand>
+              <name>A</name>
+              <icm style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </operand>
+          </fu_inst>
+          <fu_inst>
+            <name>ALU0</name>
+            <command>
+              <command_op style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </command>
+            <comment />
+            <operand>
+              <name>A</name>
+              <icm style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </operand>
+            <operand>
+              <name>B</name>
+              <icm style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </operand>
+          </fu_inst>
+          <fu_inst>
+            <name>RU0</name>
+            <command>
+              <command_op style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </command>
+            <comment />
+            <operand>
+              <name>A</name>
+              <icm style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </operand>
+          </fu_inst>
+          <fu_inst>
+            <name>LSU0</name>
+            <command>
+              <command_op style="default-id">LW</command_op>
+              <comment />
+            </command>
+            <comment />
+            <operand>
+              <name>ADDR_IN</name>
+              <icm style="default-id">IMM0.Q</icm>
+              <comment />
+            </operand>
+          </fu_inst>
+          <fu_inst>
+            <name>IMM0</name>
+            <command>
+              <command_op style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df">BBB_NUM1</command_op>
+              <comment />
+            </command>
+            <comment />
+          </fu_inst>
+        </inst>
+        <inst type="CODE">
+          <label />
+          <fu_inst>
+            <name>PCU</name>
+            <command>
+              <command_op style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </command>
+            <comment />
+            <operand>
+              <name>A</name>
+              <icm style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </operand>
+          </fu_inst>
+          <fu_inst>
+            <name>ALU0</name>
+            <command>
+              <command_op style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </command>
+            <comment />
+            <operand>
+              <name>A</name>
+              <icm style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </operand>
+            <operand>
+              <name>B</name>
+              <icm style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </operand>
+          </fu_inst>
+          <fu_inst>
+            <name>RU0</name>
+            <command>
+              <command_op style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </command>
+            <comment />
+            <operand>
+              <name>A</name>
+              <icm style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </operand>
+          </fu_inst>
+          <fu_inst>
+            <name>LSU0</name>
+            <command>
+              <command_op style="default-id">LW</command_op>
+              <comment />
+            </command>
+            <comment />
+            <operand>
+              <name>ADDR_IN</name>
+              <icm style="default-id">IMM0.Q</icm>
+              <comment />
+            </operand>
+          </fu_inst>
+          <fu_inst>
+            <name>IMM0</name>
+            <command>
+              <command_op style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df">BBB_NUM2</command_op>
+              <comment />
+            </command>
+            <comment />
+          </fu_inst>
+        </inst>
+        <inst type="CODE">
+          <label />
+          <fu_inst>
+            <name>PCU</name>
+            <command>
+              <command_op style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </command>
+            <comment />
+            <operand>
+              <name>A</name>
+              <icm style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </operand>
+          </fu_inst>
+          <fu_inst>
+            <name>ALU0</name>
+            <command>
+              <command_op style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </command>
+            <comment />
+            <operand>
+              <name>A</name>
+              <icm style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </operand>
+            <operand>
+              <name>B</name>
+              <icm style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </operand>
+          </fu_inst>
+          <fu_inst>
+            <name>RU0</name>
+            <command>
+              <command_op style="default-id">LAT</command_op>
+              <comment />
+            </command>
+            <comment />
+            <operand>
+              <name>A</name>
+              <icm style="default-id">LSU0.Q</icm>
+              <comment />
+            </operand>
+          </fu_inst>
+          <fu_inst>
+            <name>LSU0</name>
+            <command>
+              <command_op style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </command>
+            <comment />
+            <operand>
+              <name>ADDR_IN</name>
+              <icm style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </operand>
+            <operand>
+              <name>DATA</name>
+              <icm style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </operand>
+          </fu_inst>
+          <fu_inst>
+            <name>IMM0</name>
+            <command>
+              <command_op style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </command>
+            <comment />
+          </fu_inst>
+        </inst>
+        <inst type="CODE">
+          <label>tyfiyti</label>
+          <fu_inst>
+            <name>PCU</name>
+            <command>
+              <command_op style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </command>
+            <comment />
+            <operand>
+              <name>A</name>
+              <icm style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </operand>
+          </fu_inst>
+          <fu_inst>
+            <name>ALU0</name>
+            <command>
+              <command_op style="default-id">ADD</command_op>
+              <comment />
+            </command>
+            <comment />
+            <operand>
+              <name>A</name>
+              <icm style="default-id">RU0.Q</icm>
+              <comment />
+            </operand>
+            <operand>
+              <name>B</name>
+              <icm style="default-id">LSU0.Q</icm>
+              <comment />
+            </operand>
+          </fu_inst>
+          <fu_inst>
+            <name>RU0</name>
+            <command>
+              <command_op style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </command>
+            <comment />
+            <operand>
+              <name>A</name>
+              <icm style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </operand>
+          </fu_inst>
+          <fu_inst>
+            <name>LSU0</name>
+            <command>
+              <command_op style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </command>
+            <comment />
+            <operand>
+              <name>ADDR_IN</name>
+              <icm style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </operand>
+            <operand>
+              <name>DATA</name>
+              <icm style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </operand>
+          </fu_inst>
+        </inst>
+        <inst type="CODE">
+          <label />
+          <fu_inst>
+            <name>PCU</name>
+            <command>
+              <command_op style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </command>
+            <comment />
+            <operand>
+              <name>A</name>
+              <icm style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </operand>
+          </fu_inst>
+          <fu_inst>
+            <name>ALU0</name>
+            <command>
+              <command_op style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </command>
+            <comment />
+            <operand>
+              <name>A</name>
+              <icm style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </operand>
+            <operand>
+              <name>B</name>
+              <icm style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </operand>
+          </fu_inst>
+          <fu_inst>
+            <name>RU0</name>
+            <command>
+              <command_op style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </command>
+            <comment />
+            <operand>
+              <name>A</name>
+              <icm style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </operand>
+          </fu_inst>
+          <fu_inst>
+            <name>LSU0</name>
+            <command>
+              <command_op style="default-id">SW</command_op>
+              <comment />
+            </command>
+            <comment />
+            <operand>
+              <name>data</name>
+              <icm style="default-id">ALU0.Q</icm>
+              <comment />
+            </operand>
+            <operand>
+              <name>ADDR_IN</name>
+              <icm style="default-id">IMM0.Q</icm>
+              <comment />
+            </operand>
+          </fu_inst>
+          <fu_inst>
+            <name>IMM0</name>
+            <command>
+              <command_op style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df">BBB_OUT</command_op>
+              <comment />
+            </command>
+            <comment />
+          </fu_inst>
+        </inst>
+        <inst type="CODE">
+          <label />
+          <fu_inst>
+            <name>PCU</name>
+            <command>
+              <command_op style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df">SLEEP</command_op>
+              <comment />
+            </command>
+            <comment />
+            <operand>
+              <name>A</name>
+              <icm style="default-id" />
+              <comment />
+            </operand>
+          </fu_inst>
+          <fu_inst>
+            <name>ALU0</name>
+            <command>
+              <command_op style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </command>
+            <comment />
+            <operand>
+              <name>A</name>
+              <icm style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </operand>
+            <operand>
+              <name>B</name>
+              <icm style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </operand>
+          </fu_inst>
+          <fu_inst>
+            <name>RU0</name>
+            <command>
+              <command_op style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </command>
+            <comment />
+            <operand>
+              <name>A</name>
+              <icm style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </operand>
+          </fu_inst>
+          <fu_inst>
+            <name>LSU0</name>
+            <command>
+              <command_op style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </command>
+            <comment />
+            <operand>
+              <name>ADDR_IN</name>
+              <icm style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </operand>
+            <operand>
+              <name>DATA</name>
+              <icm style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </operand>
+          </fu_inst>
+          <fu_inst>
+            <name>IMM0</name>
+            <command>
+              <command_op style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </command>
+            <comment />
+          </fu_inst>
+        </inst>
+        <inst type="CODE">
+          <label />
+          <fu_inst>
+            <name>PCU</name>
+            <command>
+              <command_op style="default-id">CSTOP</command_op>
+              <comment />
+            </command>
+            <comment />
+          </fu_inst>
+          <fu_inst>
+            <name>ALU0</name>
+            <command>
+              <command_op style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </command>
+            <comment />
+            <operand>
+              <name>A</name>
+              <icm style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </operand>
+            <operand>
+              <name>B</name>
+              <icm style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </operand>
+          </fu_inst>
+          <fu_inst>
+            <name>RU0</name>
+            <command>
+              <command_op style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </command>
+            <comment />
+            <operand>
+              <name>A</name>
+              <icm style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </operand>
+          </fu_inst>
+          <fu_inst>
+            <name>LSU0</name>
+            <command>
+              <command_op style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </command>
+            <comment />
+            <operand>
+              <name>ADDR_IN</name>
+              <icm style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </operand>
+            <operand>
+              <name>DATA</name>
+              <icm style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </operand>
+          </fu_inst>
+          <fu_inst>
+            <name>IMM0</name>
+            <command>
+              <command_op style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </command>
+            <comment />
+          </fu_inst>
+        </inst>
+        <inst type="CODE">
+          <label />
+          <fu_inst>
+            <name>PCU</name>
+            <command>
+              <command_op style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df">NOP</command_op>
+              <comment />
+            </command>
+            <comment />
+            <operand>
+              <name>A</name>
+              <icm style="default-id" />
+              <comment />
+            </operand>
+          </fu_inst>
+          <fu_inst>
+            <name>ALU0</name>
+            <command>
+              <command_op style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </command>
+            <comment />
+            <operand>
+              <name>A</name>
+              <icm style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </operand>
+            <operand>
+              <name>B</name>
+              <icm style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </operand>
+          </fu_inst>
+          <fu_inst>
+            <name>RU0</name>
+            <command>
+              <command_op style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </command>
+            <comment />
+            <operand>
+              <name>A</name>
+              <icm style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </operand>
+          </fu_inst>
+          <fu_inst>
+            <name>LSU0</name>
+            <command>
+              <command_op style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </command>
+            <comment />
+            <operand>
+              <name>ADDR_IN</name>
+              <icm style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </operand>
+            <operand>
+              <name>DATA</name>
+              <icm style="STYLE ID: 7e66d36e-17e6-4bbc-ad32-dae4125651df" />
+              <comment />
+            </operand>
+          </fu_inst>
+        </inst>
+      </instructions>
+    </code>
+  </codes>
+  <name>routine3</name>
+  <comment />
+  <Regs />
+  <external_labels />
+</asip_src>
+
