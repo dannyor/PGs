@@ -32,7 +32,7 @@ class WestminsterFormatBookParser(
 
     val bookPattern = Pattern.compile("(.+?) \\((.+?) chapters, (.+?) verses\\)")
     val chapterPattern = Pattern.compile("Chapter (\\d+)   \\((\\d+) verses\\)")
-    val versePattern = Pattern.compile("\u202b  (\\d+):(\\d+)   (.+?)")
+    val versePattern = Pattern.compile("\u202B(\u00a0+)(\\d+)(\u00a0+)\u05c3(\\d+)(\u00a0+)(.+?)\u202C")
 
 
     fun parse() {
@@ -85,9 +85,9 @@ class WestminsterFormatBookParser(
 
     private fun processChapterContents() {
         while (!isCommentLine) {
-            val matcher = bookPattern.matcher(currentLine)
+            val matcher = versePattern.matcher(currentLine)
             matcher.find()
-            currentLine = matcher.group(3)
+            currentLine = matcher.group(6).trim()
             currentChapter.verses.add(currentLine)
             nextLine()
         }
