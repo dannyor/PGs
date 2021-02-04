@@ -8,4 +8,4 @@
  */
 
 rootProject.name = "tnc-pg"
-include("app")
+include("app", "lib")
