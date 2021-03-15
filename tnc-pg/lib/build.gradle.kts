@@ -8,8 +8,8 @@
 
 plugins {
     // Apply the org.jetbrains.kotlin.jvm Plugin to add support for Kotlin.
-    id("org.jetbrains.kotlin.jvm") version "1.4.20"
-
+    kotlin("jvm") version "1.4.31"
+    kotlin("plugin.serialization") version "1.4.31"
     // Apply the java-library plugin for API and implementation separation.
     `java-library`
 }
@@ -29,10 +29,14 @@ dependencies {
     // This dependency is used internally, and not exposed to consumers on their own compile classpath.
     implementation("com.google.guava:guava:29.0-jre")
     implementation("org.apache.commons:commons-lang3:3.11")
+    implementation("commons-io:commons-io:2.8.0")
     implementation("ch.qos.logback:logback-classic:1.2.3")
     implementation("net.java.truevfs:truevfs-access:0.13.0")
     implementation("net.java.truevfs:truevfs-kernel-impl:0.13.0")
     implementation("net.java.truevfs:truevfs-driver-file:0.13.0")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0")
+//    implementation("io.ktor:ktor-serialization:1.5.2")
 
     // Use the Kotlin test library.
     testImplementation("org.jetbrains.kotlin:kotlin-test")
@@ -42,4 +46,5 @@ dependencies {
 
     // This dependency is exported to consumers, that is to say found on their compile classpath.
     api("org.apache.commons:commons-math3:3.6.1")
+
 }

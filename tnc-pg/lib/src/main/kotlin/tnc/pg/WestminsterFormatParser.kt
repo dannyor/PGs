@@ -5,23 +5,18 @@ import net.java.truevfs.access.TFileReader
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.BufferedReader
+import java.lang.Exception
 import java.util.regex.Pattern
 import java.lang.IllegalStateException
 import java.nio.charset.Charset
 
 
-data class Book(val name: String, val numOfChapters: Int, val numOfVerses: Int) {
-    val chapters = mutableListOf<Chapter>()
-}
-data class Chapter(val chapterIndex:Int, val numOfVerses: Int) {
-    val verses = mutableListOf<String>()
-}
-
 private val commentPrefix = "\u202axxxx"
 private val linePrefix = "\u05D2\u20AC\u00D7xxxx"
 
 class WestminsterFormatBookParser(
-    private val file: TFile) : AutoCloseable {
+    private val file: TFile
+) : AutoCloseable {
     val logger: Logger = LoggerFactory.getLogger(javaClass)
     private val reader = BufferedReader(TFileReader(file, Charset.forName("UTF8")))
     var currentLine: String = ""
@@ -32,15 +27,16 @@ class WestminsterFormatBookParser(
 
     val bookPattern = Pattern.compile("(.+?) \\((.+?) chapters, (.+?) verses\\)")
     val chapterPattern = Pattern.compile("Chapter (\\d+)   \\((\\d+) verses\\)")
-    val versePattern = Pattern.compile("\u202B(\u00a0+)(\\d+)(\u00a0+)\u05c3(\\d+)(\u00a0+)(.+?)\u202C")
+    val versePattern = Pattern.compile("\u202B(\u00a0+)(\\d+)(\u00a0*)\u05c3(\\d+)(\u00a0+)(.+?)\u202C")
 
 
     fun parse() {
         nextLine()
         book = processBookHeader()
         nextLine()
-        while (!isEnd) {
+        while (true) {
             processChapterHeader()
+            if (isEnd) return
             nextLine()
             processChapterContents()
         }
@@ -50,17 +46,17 @@ class WestminsterFormatBookParser(
         currentLine = reader.readLine().trim()
         isCommentLine = currentLine.startsWith(commentPrefix)
         isEnd = currentLine.contains("End of")
-        if(isCommentLine) {
+        if (isCommentLine) {
             currentLine = currentLine.substring(commentPrefix.length, currentLine.length).trim()
         } else {
             currentLine = currentLine.trim()
         }
-        println("::: $currentLine")
+//        println("::: $currentLine")
     }
 
-    private fun processBookHeader() : Book {
-        while(isCommentLine) {
-            if(currentLine.contains("chapters") && currentLine.contains("verses")) {
+    private fun processBookHeader(): Book {
+        while (isCommentLine) {
+            if (currentLine.contains("chapters") && currentLine.contains("verses")) {
                 val matcher = bookPattern.matcher(currentLine)
                 matcher.find()
                 val nChapters = Integer.parseInt(matcher.group(2))
@@ -74,6 +70,7 @@ class WestminsterFormatBookParser(
 
     private fun processChapterHeader() {
         nextLine()
+        if (isEnd) return
         val matcher = chapterPattern.matcher(currentLine)
         matcher.find()
         val chapterIndex = Integer.parseInt(matcher.group(1))
@@ -87,7 +84,11 @@ class WestminsterFormatBookParser(
         while (!isCommentLine) {
             val matcher = versePattern.matcher(currentLine)
             matcher.find()
-            currentLine = matcher.group(6).trim()
+            try {
+                currentLine = matcher.group(6).trim()
+            } catch (e:Exception) {
+                e.printStackTrace()
+            }
             currentChapter.verses.add(currentLine)
             nextLine()
         }
