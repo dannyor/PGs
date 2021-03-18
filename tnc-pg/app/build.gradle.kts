@@ -29,6 +29,8 @@ dependencies {
     // This dependency is used by the application.
     implementation("com.google.guava:guava:29.0-jre")
 
+    implementation("commons-io:commons-io:2.8.0")
+
     // Use the Kotlin test library.
     testImplementation("org.jetbrains.kotlin:kotlin-test")
 
