@@ -1,13 +1,12 @@
 package tnc.pg
 
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import net.java.truevfs.access.TFile
 import org.apache.commons.io.FileUtils
 import java.io.File
 
-class Conversions(val targetDir: File) {
+class Conversions(private val targetDir: File) {
     fun convert(input: File) {
         val target = File(targetDir, input.parentFile.name + ".bib")
         if (target.exists()) {
@@ -17,19 +16,15 @@ class Conversions(val targetDir: File) {
         convertTo(input, target)
     }
 
-    fun convertTo(input: File, output: File) {
+    private fun convertTo(input: File, output: File) {
         val parser = WestminsterFormatBookParser(TFile(input))
         parser.parse()
         val encodedString = Json { prettyPrint = true }.encodeToString(parser.book)
         FileUtils.write(output, encodedString, "UTF-16")
     }
 }
-class Parsing {
 
-
-}
-
-class SingleFileConversions(val targetDir: File) {
+class SingleFileConversions(private val targetDir: File) {
     private val bookList = mutableListOf<Book>()
 
     fun convert(input: File) {
@@ -47,7 +42,8 @@ class SingleFileConversions(val targetDir: File) {
 
 fun main() {
 //    flatFileConversion()
-    flatFileConversionWithNikud()
+//    flatFileConversionWithNikud()
+    flatFileConversionWithNikudAndTeamim()
 //    Conversions.convert(File("lib/src/main/resources/01.Tora-תורה/01.Bereshit-בראשית/consonants.txt"), File("Bereshit.bib"))
 //    conversions.convertTo(File("lib/src/main/resources/02.Neviim-נביאים/16.Yoel-יואל/consonants.txt"), File("Yoel.bib"))
 }
@@ -76,4 +72,13 @@ fun flatFileConversionWithNikud() {
             conversions.convert(it)
     }
 //    conversions.writeToFile("bible-nikud.json")
+}
+
+fun flatFileConversionWithNikudAndTeamim() {
+    val conversions = SingleFileConversions(File("result-resources/multifiles-beautified"))
+    File("lib/src/main/resources").walkTopDown().forEach {
+        if (it.name.contains("accents"))
+            conversions.convert(it)
+    }
+    conversions.writeToFile("bible-nikud_and_teamim.json")
 }
