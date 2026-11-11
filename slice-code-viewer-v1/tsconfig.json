@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "rootDir": ".",
+    "outDir": "dist",
+    "strict": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "declaration": true,
+    "types": ["node", "vscode"],
+    "resolveJsonModule": true
+  },
+  "include": ["bridge/**/*.ts", "examples/**/*.ts", "extension/**/*.ts", "protocol/**/*.ts", "test/**/*.ts"]
+}

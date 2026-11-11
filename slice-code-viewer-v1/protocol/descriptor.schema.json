@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://4codex.local/schemas/review-descriptor-v1.json",
+  "title": "dSlice review descriptor v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "id", "title", "promise", "workspaceId", "scenarios", "items"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "id": { "type": "string", "minLength": 1 },
+    "title": { "type": "string", "minLength": 1 },
+    "promise": { "type": "string", "minLength": 1 },
+    "workspaceId": { "type": "string", "minLength": 1 },
+    "scenarios": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "title", "behavior"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "title": { "type": "string", "minLength": 1 },
+          "behavior": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "items": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "title", "kind", "codeRole", "intent", "scenarioIds", "location"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "title": { "type": "string", "minLength": 1 },
+          "kind": { "enum": ["specification", "implementation", "boundary", "context"] },
+          "codeRole": {
+            "enum": ["main", "test"],
+            "description": "Whether this review item points to production/main code or executable test code. Every scenario must have at least one item of each role."
+          },
+          "intent": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The AI-declared behavioral outcome, rule, responsibility, or invariant this item is intended to realize or prove. This is the primary human-review claim, not merely a reason for including the item."
+          },
+          "scenarioIds": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+          "location": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path", "line", "column"],
+            "properties": {
+              "path": { "type": "string", "minLength": 1 },
+              "line": { "type": "integer", "minimum": 1 },
+              "column": { "type": "integer", "minimum": 1 }
+            }
+          }
+        }
+      }
+    }
+  }
+}

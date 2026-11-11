@@ -1,0 +1,72 @@
+{
+  "name": "codex-code-server-extension",
+  "displayName": "Codex Slice Review",
+  "description": "Guided dSlice review inside code-server and VS Code.",
+  "publisher": "4codex",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22",
+    "vscode": "^1.96.0"
+  },
+  "main": "./dist/extension/extension.cjs",
+  "categories": ["Other"],
+  "bin": {
+    "codex-code-server-bridge": "./dist/bridge/server.js",
+    "codex-code-server": "./dist/bridge/cli.js"
+  },
+  "scripts": {
+    "build": "npm run clean && tsc -p tsconfig.json && node scripts/build-extension.mjs",
+    "clean": "node scripts/clean.mjs",
+    "demo:descriptor": "node examples/reservation-demo/create-descriptor.mjs",
+    "test": "npm run build && node --test dist/test/*.test.js dist/examples/reservation-demo/test/*.test.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "contributes": {
+    "commands": [
+      { "command": "codexSliceReview.markUnderstood", "title": "Slice Review: Mark Intent Understood" },
+      { "command": "codexSliceReview.ask", "title": "Slice Review: Ask a Question" },
+      { "command": "codexSliceReview.skip", "title": "Slice Review: Skip Item" },
+      { "command": "codexSliceReview.open", "title": "Slice Review: Open Item" }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "codexSliceReview",
+          "title": "Slice Review",
+          "icon": "media/slice-review.svg"
+        }
+      ]
+    },
+    "views": {
+      "codexSliceReview": [
+        {
+          "type": "webview",
+          "id": "codexSliceReview.canvas",
+          "name": "Review Canvas",
+          "visibility": "visible"
+        },
+        {
+          "id": "codexSliceReview.review",
+          "name": "Review Outline",
+          "visibility": "collapsed"
+        }
+      ]
+    },
+    "menus": {
+      "view/item/context": [
+        { "command": "codexSliceReview.open", "when": "view == codexSliceReview.review && viewItem == reviewItem", "group": "inline@1" },
+        { "command": "codexSliceReview.markUnderstood", "when": "view == codexSliceReview.review && viewItem == reviewItem", "group": "inline@2" },
+        { "command": "codexSliceReview.ask", "when": "view == codexSliceReview.review && viewItem == reviewItem", "group": "navigation@1" },
+        { "command": "codexSliceReview.skip", "when": "view == codexSliceReview.review && viewItem == reviewItem", "group": "navigation@2" }
+      ]
+    }
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@types/vscode": "^1.96.0",
+    "esbuild": "^0.25.0",
+    "typescript": "^5.9.0"
+  }
+}
