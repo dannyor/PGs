@@ -1,0 +1,600 @@
+{
+  "version": 1,
+  "presentation": {
+    "id": "structural-demo-cpp",
+    "label": "Structural demo — C++",
+    "blocks": [
+      {
+        "id": "ClassA",
+        "kind": "class",
+        "symbol": "ClassA",
+        "path": "include/structural_demo/core.h",
+        "role": "Main component"
+      },
+      {
+        "id": "ClassB",
+        "kind": "class",
+        "symbol": "ClassB",
+        "path": "include/structural_demo/core.h",
+        "role": "Input gateway",
+        "parentId": "ClassA"
+      },
+      {
+        "id": "ClassC",
+        "kind": "class",
+        "symbol": "ClassC",
+        "path": "include/structural_demo/core.h",
+        "role": "Request parser",
+        "parentId": "ClassA"
+      },
+      {
+        "id": "ClassD",
+        "kind": "class",
+        "symbol": "ClassD",
+        "path": "include/structural_demo/core.h",
+        "role": "Scenario router",
+        "parentId": "ClassA"
+      },
+      {
+        "id": "ClassE",
+        "kind": "class",
+        "symbol": "ClassE",
+        "path": "include/structural_demo/simple.h",
+        "role": "Simple coordinator",
+        "parentId": "ClassD"
+      },
+      {
+        "id": "ClassF",
+        "kind": "class",
+        "symbol": "ClassF",
+        "path": "include/structural_demo/simple.h",
+        "role": "Rule engine",
+        "parentId": "ClassE"
+      },
+      {
+        "id": "ClassG",
+        "kind": "class",
+        "symbol": "ClassG",
+        "path": "include/structural_demo/simple.h",
+        "role": "State mutator",
+        "parentId": "ClassE"
+      },
+      {
+        "id": "ClassH",
+        "kind": "class",
+        "symbol": "ClassH",
+        "path": "include/structural_demo/nested.h",
+        "role": "Nested coordinator",
+        "parentId": "ClassD"
+      },
+      {
+        "id": "ClassI",
+        "kind": "class",
+        "symbol": "ClassI",
+        "path": "include/structural_demo/nested.h",
+        "role": "Authorization service",
+        "parentId": "ClassH"
+      },
+      {
+        "id": "ClassJ",
+        "kind": "class",
+        "symbol": "ClassJ",
+        "path": "include/structural_demo/nested.h",
+        "role": "Enrichment service",
+        "parentId": "ClassH"
+      },
+      {
+        "id": "ClassK",
+        "kind": "class",
+        "symbol": "ClassK",
+        "path": "include/structural_demo/nested.h",
+        "role": "Pricing service",
+        "parentId": "ClassH"
+      },
+      {
+        "id": "ClassL",
+        "kind": "class",
+        "symbol": "ClassL",
+        "path": "include/structural_demo/nested.h",
+        "role": "Audit service",
+        "parentId": "ClassH"
+      },
+      {
+        "id": "ClassM",
+        "kind": "class",
+        "symbol": "ClassM",
+        "path": "include/structural_demo/parallel.h",
+        "role": "Parallel coordinator",
+        "parentId": "ClassD"
+      },
+      {
+        "id": "ClassN",
+        "kind": "class",
+        "symbol": "ClassN",
+        "path": "include/structural_demo/parallel.h",
+        "role": "Primary reader",
+        "parentId": "ClassM"
+      },
+      {
+        "id": "ClassO",
+        "kind": "class",
+        "symbol": "ClassO",
+        "path": "include/structural_demo/parallel.h",
+        "role": "Secondary reader",
+        "parentId": "ClassM"
+      },
+      {
+        "id": "ClassP",
+        "kind": "class",
+        "symbol": "ClassP",
+        "path": "include/structural_demo/parallel.h",
+        "role": "Compute worker",
+        "parentId": "ClassM"
+      },
+      {
+        "id": "ClassQ",
+        "kind": "class",
+        "symbol": "ClassQ",
+        "path": "include/structural_demo/durable.h",
+        "role": "Durable coordinator",
+        "parentId": "ClassD"
+      },
+      {
+        "id": "ClassR",
+        "kind": "class",
+        "symbol": "ClassR",
+        "path": "include/structural_demo/durable.h",
+        "role": "Repository",
+        "parentId": "ClassQ"
+      },
+      {
+        "id": "ClassS",
+        "kind": "class",
+        "symbol": "ClassS",
+        "path": "include/structural_demo/durable.h",
+        "role": "Journal",
+        "parentId": "ClassQ"
+      },
+      {
+        "id": "ClassT",
+        "kind": "class",
+        "symbol": "ClassT",
+        "path": "include/structural_demo/durable.h",
+        "role": "Notification gateway",
+        "parentId": "ClassQ"
+      }
+    ],
+    "scenarios": [
+      {
+        "id": "Scenario1",
+        "title": "Simple pipeline",
+        "actor": "StructuralSystem caller",
+        "startingState": "The account has no local accumulated value.",
+        "action": "The caller submits a valid request through the simple route.",
+        "result": "The accepted adjusted value is applied to the account state.",
+        "participants": [
+          {
+            "blockId": "ClassA",
+            "role": "main component"
+          },
+          {
+            "blockId": "ClassB",
+            "role": "input gateway"
+          },
+          {
+            "blockId": "ClassC",
+            "role": "request parser"
+          },
+          {
+            "blockId": "ClassD",
+            "role": "scenario router"
+          },
+          {
+            "blockId": "ClassE",
+            "role": "simple coordinator"
+          },
+          {
+            "blockId": "ClassF",
+            "role": "rule engine"
+          },
+          {
+            "blockId": "ClassG",
+            "role": "state mutator"
+          }
+        ],
+        "evidence": [
+          {
+            "kind": "specification",
+            "label": "Simple pipeline specification",
+            "path": "test/structural_spec.cpp",
+            "line": 23,
+            "column": 1
+          },
+          {
+            "kind": "main",
+            "label": "ClassA — Main component",
+            "path": "include/structural_demo/core.h",
+            "line": 45,
+            "column": 1
+          },
+          {
+            "kind": "main",
+            "label": "ClassB — Input gateway",
+            "path": "include/structural_demo/core.h",
+            "line": 13,
+            "column": 1
+          },
+          {
+            "kind": "main",
+            "label": "ClassC — Request parser",
+            "path": "include/structural_demo/core.h",
+            "line": 22,
+            "column": 1
+          },
+          {
+            "kind": "main",
+            "label": "ClassD — Scenario router",
+            "path": "include/structural_demo/core.h",
+            "line": 31,
+            "column": 1
+          },
+          {
+            "kind": "main",
+            "label": "ClassE — Simple coordinator",
+            "path": "include/structural_demo/simple.h",
+            "line": 35,
+            "column": 1
+          },
+          {
+            "kind": "main",
+            "label": "ClassF — Rule engine",
+            "path": "include/structural_demo/simple.h",
+            "line": 15,
+            "column": 1
+          },
+          {
+            "kind": "main",
+            "label": "ClassG — State mutator",
+            "path": "include/structural_demo/simple.h",
+            "line": 24,
+            "column": 1
+          }
+        ]
+      },
+      {
+        "id": "Scenario2",
+        "title": "Nested business flow",
+        "actor": "StructuralSystem caller",
+        "startingState": "The request is authorized and has unnormalized pricing tags.",
+        "action": "The caller submits the request through the nested route.",
+        "result": "The request is enriched, priced, and recorded at a new audit revision.",
+        "participants": [
+          {
+            "blockId": "ClassA",
+            "role": "main component"
+          },
+          {
+            "blockId": "ClassB",
+            "role": "input gateway"
+          },
+          {
+            "blockId": "ClassC",
+            "role": "request parser"
+          },
+          {
+            "blockId": "ClassD",
+            "role": "scenario router"
+          },
+          {
+            "blockId": "ClassH",
+            "role": "nested coordinator"
+          },
+          {
+            "blockId": "ClassI",
+            "role": "authorization service"
+          },
+          {
+            "blockId": "ClassJ",
+            "role": "enrichment service"
+          },
+          {
+            "blockId": "ClassK",
+            "role": "pricing service"
+          },
+          {
+            "blockId": "ClassL",
+            "role": "audit service"
+          }
+        ],
+        "evidence": [
+          {
+            "kind": "specification",
+            "label": "Nested business flow specification",
+            "path": "test/structural_spec.cpp",
+            "line": 34,
+            "column": 1
+          },
+          {
+            "kind": "main",
+            "label": "ClassA — Main component",
+            "path": "include/structural_demo/core.h",
+            "line": 45,
+            "column": 1
+          },
+          {
+            "kind": "main",
+            "label": "ClassB — Input gateway",
+            "path": "include/structural_demo/core.h",
+            "line": 13,
+            "column": 1
+          },
+          {
+            "kind": "main",
+            "label": "ClassC — Request parser",
+            "path": "include/structural_demo/core.h",
+            "line": 22,
+            "column": 1
+          },
+          {
+            "kind": "main",
+            "label": "ClassD — Scenario router",
+            "path": "include/structural_demo/core.h",
+            "line": 31,
+            "column": 1
+          },
+          {
+            "kind": "main",
+            "label": "ClassH — Nested coordinator",
+            "path": "include/structural_demo/nested.h",
+            "line": 57,
+            "column": 1
+          },
+          {
+            "kind": "main",
+            "label": "ClassI — Authorization service",
+            "path": "include/structural_demo/nested.h",
+            "line": 14,
+            "column": 1
+          },
+          {
+            "kind": "main",
+            "label": "ClassJ — Enrichment service",
+            "path": "include/structural_demo/nested.h",
+            "line": 23,
+            "column": 1
+          },
+          {
+            "kind": "main",
+            "label": "ClassK — Pricing service",
+            "path": "include/structural_demo/nested.h",
+            "line": 32,
+            "column": 1
+          },
+          {
+            "kind": "main",
+            "label": "ClassL — Audit service",
+            "path": "include/structural_demo/nested.h",
+            "line": 41,
+            "column": 1
+          }
+        ]
+      },
+      {
+        "id": "Scenario3",
+        "title": "Parallel aggregation",
+        "actor": "StructuralSystem caller",
+        "startingState": "Three independent calculations can run for the same request.",
+        "action": "The caller submits the request through the parallel route.",
+        "result": "All three branch values are returned and merged into one result.",
+        "participants": [
+          {
+            "blockId": "ClassA",
+            "role": "main component"
+          },
+          {
+            "blockId": "ClassB",
+            "role": "input gateway"
+          },
+          {
+            "blockId": "ClassC",
+            "role": "request parser"
+          },
+          {
+            "blockId": "ClassD",
+            "role": "scenario router"
+          },
+          {
+            "blockId": "ClassM",
+            "role": "parallel coordinator"
+          },
+          {
+            "blockId": "ClassN",
+            "role": "primary reader"
+          },
+          {
+            "blockId": "ClassO",
+            "role": "secondary reader"
+          },
+          {
+            "blockId": "ClassP",
+            "role": "compute worker"
+          }
+        ],
+        "evidence": [
+          {
+            "kind": "specification",
+            "label": "Parallel aggregation specification",
+            "path": "test/structural_spec.cpp",
+            "line": 45,
+            "column": 1
+          },
+          {
+            "kind": "main",
+            "label": "ClassA — Main component",
+            "path": "include/structural_demo/core.h",
+            "line": 45,
+            "column": 1
+          },
+          {
+            "kind": "main",
+            "label": "ClassB — Input gateway",
+            "path": "include/structural_demo/core.h",
+            "line": 13,
+            "column": 1
+          },
+          {
+            "kind": "main",
+            "label": "ClassC — Request parser",
+            "path": "include/structural_demo/core.h",
+            "line": 22,
+            "column": 1
+          },
+          {
+            "kind": "main",
+            "label": "ClassD — Scenario router",
+            "path": "include/structural_demo/core.h",
+            "line": 31,
+            "column": 1
+          },
+          {
+            "kind": "main",
+            "label": "ClassM — Parallel coordinator",
+            "path": "include/structural_demo/parallel.h",
+            "line": 42,
+            "column": 1
+          },
+          {
+            "kind": "main",
+            "label": "ClassN — Primary reader",
+            "path": "include/structural_demo/parallel.h",
+            "line": 9,
+            "column": 1
+          },
+          {
+            "kind": "main",
+            "label": "ClassO — Secondary reader",
+            "path": "include/structural_demo/parallel.h",
+            "line": 18,
+            "column": 1
+          },
+          {
+            "kind": "main",
+            "label": "ClassP — Compute worker",
+            "path": "include/structural_demo/parallel.h",
+            "line": 27,
+            "column": 1
+          }
+        ]
+      },
+      {
+        "id": "Scenario4",
+        "title": "Durable completion",
+        "actor": "StructuralSystem caller",
+        "startingState": "A request may already have a persisted revision and value.",
+        "action": "The caller submits the request through the durable route twice.",
+        "result": "Each call advances durable state and completes save, journal, and notification effects.",
+        "participants": [
+          {
+            "blockId": "ClassA",
+            "role": "main component"
+          },
+          {
+            "blockId": "ClassB",
+            "role": "input gateway"
+          },
+          {
+            "blockId": "ClassC",
+            "role": "request parser"
+          },
+          {
+            "blockId": "ClassD",
+            "role": "scenario router"
+          },
+          {
+            "blockId": "ClassQ",
+            "role": "durable coordinator"
+          },
+          {
+            "blockId": "ClassR",
+            "role": "repository"
+          },
+          {
+            "blockId": "ClassS",
+            "role": "journal"
+          },
+          {
+            "blockId": "ClassT",
+            "role": "notification gateway"
+          }
+        ],
+        "evidence": [
+          {
+            "kind": "specification",
+            "label": "Durable completion specification",
+            "path": "test/structural_spec.cpp",
+            "line": 57,
+            "column": 1
+          },
+          {
+            "kind": "main",
+            "label": "ClassA — Main component",
+            "path": "include/structural_demo/core.h",
+            "line": 45,
+            "column": 1
+          },
+          {
+            "kind": "main",
+            "label": "ClassB — Input gateway",
+            "path": "include/structural_demo/core.h",
+            "line": 13,
+            "column": 1
+          },
+          {
+            "kind": "main",
+            "label": "ClassC — Request parser",
+            "path": "include/structural_demo/core.h",
+            "line": 22,
+            "column": 1
+          },
+          {
+            "kind": "main",
+            "label": "ClassD — Scenario router",
+            "path": "include/structural_demo/core.h",
+            "line": 31,
+            "column": 1
+          },
+          {
+            "kind": "main",
+            "label": "ClassQ — Durable coordinator",
+            "path": "include/structural_demo/durable.h",
+            "line": 47,
+            "column": 1
+          },
+          {
+            "kind": "main",
+            "label": "ClassR — Repository",
+            "path": "include/structural_demo/durable.h",
+            "line": 16,
+            "column": 1
+          },
+          {
+            "kind": "main",
+            "label": "ClassS — Journal",
+            "path": "include/structural_demo/durable.h",
+            "line": 27,
+            "column": 1
+          },
+          {
+            "kind": "main",
+            "label": "ClassT — Notification gateway",
+            "path": "include/structural_demo/durable.h",
+            "line": 37,
+            "column": 1
+          }
+        ]
+      }
+    ]
+  },
+  "references": [],
+  "relationships": []
+}

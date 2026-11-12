@@ -1,0 +1,179 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "chunk"],
+  "properties": {
+    "version": { "enum": [1, 2] },
+    "chunk": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "label", "elements"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "label": { "type": "string", "minLength": 1 },
+        "elements": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/element" }
+        }
+      }
+    },
+    "references": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/reference" }
+    },
+    "relationships": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/relationship" }
+    }
+  },
+  "$defs": {
+    "position": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "line", "column"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "line": { "type": "integer", "minimum": 1 },
+        "column": { "type": "integer", "minimum": 1 },
+        "length": { "type": "integer", "minimum": 1 },
+        "role": { "enum": ["type", "function", "constant", "field"] }
+      }
+    },
+    "range": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["startLine", "endLine"],
+      "properties": {
+        "startLine": { "type": "integer", "minimum": 1 },
+        "endLine": { "type": "integer", "minimum": 1 },
+        "startColumn": { "type": "integer", "minimum": 1 },
+        "endColumn": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "symbol", "path"],
+      "properties": {
+        "kind": { "enum": ["class", "struct", "enum", "function", "field"] },
+        "symbol": { "type": "string", "minLength": 1 },
+        "path": { "type": "string", "minLength": 1 }
+      }
+    },
+    "scaffolding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["startLine", "endLine", "label"],
+      "properties": {
+        "startLine": { "type": "integer", "minimum": 1 },
+        "endLine": { "type": "integer", "minimum": 1 },
+        "label": { "type": "string", "minLength": 1 }
+      }
+    },
+    "segment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "intentKind", "change", "intent", "ranges"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "intentKind": { "enum": ["behavior", "contract", "structure", "wiring"] },
+        "change": { "enum": ["new", "modified"] },
+        "intent": { "type": "string", "minLength": 1 },
+        "ranges": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/range" }
+        }
+      }
+    },
+    "element": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "symbol", "path"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "kind": { "enum": ["class", "struct", "enum", "function", "field"] },
+        "symbol": { "type": "string", "minLength": 1 },
+        "path": { "type": "string", "minLength": 1 },
+        "focus": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/range" }
+        },
+        "segments": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/segment" }
+        },
+        "scaffolding": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/scaffolding" }
+        }
+      }
+    },
+    "reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source"],
+      "properties": {
+        "source": { "$ref": "#/$defs/position" },
+        "target": { "$ref": "#/$defs/target" },
+        "origin": { "type": "string", "minLength": 1 }
+      },
+      "oneOf": [
+        { "required": ["target"], "not": { "required": ["origin"] } },
+        { "required": ["origin"], "not": { "required": ["target"] } }
+      ]
+    },
+    "relationshipSite": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "line"],
+      "properties": {
+        "path": { "type": "string", "minLength": 1 },
+        "line": { "type": "integer", "minimum": 1 },
+        "column": { "type": "integer", "minimum": 1 },
+        "length": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "relationship": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "from", "to", "sites"],
+      "properties": {
+        "kind": { "enum": ["calls", "reads", "writes"] },
+        "from": { "$ref": "#/$defs/target" },
+        "to": { "$ref": "#/$defs/target" },
+        "sites": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/relationshipSite" }
+        },
+        "certainty": { "enum": ["direct", "possible"] }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "version": { "const": 2 } }, "required": ["version"] },
+      "then": {
+        "properties": {
+          "chunk": {
+            "type": "object",
+            "properties": {
+              "elements": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["segments"],
+                  "not": { "type": "object", "required": ["focus"] }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

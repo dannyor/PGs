@@ -1,0 +1,43 @@
+{
+  "name": "codex-codebase-viewer-standalone",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "codex-codebase-viewer": "dist/node/server/cli.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.server.json && vite build",
+    "dev": "vite",
+    "start": "node dist/node/server/cli.js",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.server.json --noEmit && tsc -p tsconfig.client.json --noEmit"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@codemirror/lang-cpp": "^6.0.3",
+    "@codemirror/language": "^6.12.4",
+    "@codemirror/state": "^6.0.0",
+    "@codemirror/view": "^6.0.0",
+    "@lezer/highlight": "^1.2.3",
+    "ajv": "^8.20.0",
+    "chokidar": "^5.0.0",
+    "cytoscape": "file:../cytoscape-3.34.1.tgz",
+    "tree-sitter": "0.22.4",
+    "tree-sitter-cpp": "^0.23.4"
+  },
+  "devDependencies": {
+    "@types/node": "^25.0.0",
+    "typescript": "^5.9.3",
+    "vite": "^7.0.0",
+    "vitest": "^3.0.0"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true,
+    "tree-sitter@0.22.4": true,
+    "tree-sitter-c@0.23.6": true,
+    "tree-sitter-cpp@0.23.4": true
+  }
+}
