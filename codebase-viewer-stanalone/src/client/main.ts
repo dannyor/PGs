@@ -17,6 +17,10 @@ app.innerHTML = `
     <header><p>CODEX CODEBASE</p><h1 id="chunk-title">Waiting for a presentation</h1></header>
     <div id="view-tabs"><button class="active" data-view="entities">Entities</button><button data-view="scenarios">Scenarios</button><button data-view="entity-map">Entity Map</button></div>
     <div id="entity-view">
+      <div id="entity-tree-tools" aria-label="Entity tree controls">
+        <button id="collapse-entities" type="button" title="Collapse all entity branches">Collapse all</button>
+        <button id="expand-selected" type="button" title="Expand the path to the selected entity">Selected path</button>
+      </div>
       <nav id="elements" aria-label="Code entities"></nav>
       <section id="entity-scenarios" aria-label="Scenarios associated with selected entity">
         <div id="entity-scenarios-heading">Associated scenarios</div>
@@ -63,6 +67,15 @@ app.innerHTML = `
         <button id="settings-button" type="button" aria-label="Viewer settings" aria-expanded="false" aria-controls="settings-panel" title="Viewer settings">⚙</button>
         <div id="settings-panel" hidden>
           <strong>Viewer settings</strong>
+          <label class="settings-field"><span>Color scheme</span>
+            <select id="color-scheme" aria-label="Color scheme">
+              <option value="system">System</option>
+              <option value="light">Light</option>
+              <option value="mid">Charcoal</option>
+              <option value="low">Muted dark</option>
+              <option value="dark">Dark</option>
+            </select>
+          </label>
           <label><input id="show-intents" type="checkbox" checked> Show intent descriptions</label>
         </div>
       </div>
@@ -96,6 +109,9 @@ const backButton = document.querySelector<HTMLButtonElement>("#back")!;
 const settingsButton = document.querySelector<HTMLButtonElement>("#settings-button")!;
 const settingsPanel = document.querySelector<HTMLElement>("#settings-panel")!;
 const showIntents = document.querySelector<HTMLInputElement>("#show-intents")!;
+const colorScheme = document.querySelector<HTMLSelectElement>("#color-scheme")!;
+const collapseEntities = document.querySelector<HTMLButtonElement>("#collapse-entities")!;
+const expandSelected = document.querySelector<HTMLButtonElement>("#expand-selected")!;
 const legendButton = document.querySelector<HTMLButtonElement>("#legend-button")!;
 const legendPanel = document.querySelector<HTMLElement>("#legend-panel")!;
 const entityTooltip = document.querySelector<HTMLElement>("#entity-tooltip")!;
@@ -114,14 +130,18 @@ let scenarioDetailHeight = 300;
 let relationships: CodeRelationship[] = [];
 const backStack: Array<{ element: ElementView; inChunk: boolean }> = [];
 const workspaceBase = window.location.pathname.match(/^\/w\/[^/]+/)?.[0] ?? "";
+type ThemeChoice = "system" | "light" | "dark" | "mid" | "low";
+const themeChoices = new Set<ThemeChoice>(["system", "light", "dark", "mid", "low"]);
+const themeStorageKey = "codex-code-viewer-color-scheme";
+const systemColorScheme = window.matchMedia("(prefers-color-scheme: dark)");
 const gentleHighlighting = HighlightStyle.define([
-  { tag: [tags.className, tags.typeName], color: "#8eb8c5" },
-  { tag: [tags.function(tags.variableName), tags.function(tags.propertyName)], color: "#c8ad83" },
-  { tag: tags.constant(tags.name), color: "#b7a4c7" },
-  { tag: tags.keyword, color: "#9ba9c4" },
-  { tag: tags.string, color: "#a7bd91" },
-  { tag: [tags.number, tags.bool, tags.null], color: "#c3a477" },
-  { tag: tags.comment, color: "#687982", fontStyle: "italic" }
+  { tag: [tags.className, tags.typeName], color: "var(--syntax-type)" },
+  { tag: [tags.function(tags.variableName), tags.function(tags.propertyName)], color: "var(--syntax-function)" },
+  { tag: tags.constant(tags.name), color: "var(--syntax-constant)" },
+  { tag: tags.keyword, color: "var(--syntax-keyword)" },
+  { tag: tags.string, color: "var(--syntax-string)" },
+  { tag: [tags.number, tags.bool, tags.null], color: "var(--syntax-number)" },
+  { tag: tags.comment, color: "var(--syntax-comment)", fontStyle: "italic" }
 ]);
 const toggleScaffolding = StateEffect.define<number>();
 const toggleFunctionBody = StateEffect.define<number>();
@@ -209,6 +229,7 @@ class SegmentIntentWidget extends WidgetType {
   }
 }
 
+applyTheme(readThemeChoice());
 await loadPresentation();
 const events = new EventSource(apiPath("/api/events"));
 events.addEventListener("presentation", () => void loadPresentation());
@@ -219,6 +240,10 @@ document.querySelectorAll<HTMLButtonElement>("#view-tabs button").forEach((butto
 backButton.addEventListener("click", goBack);
 settingsButton.addEventListener("click", toggleSettings);
 showIntents.addEventListener("change", updateIntentVisibility);
+colorScheme.addEventListener("change", () => applyTheme(colorScheme.value as ThemeChoice));
+systemColorScheme.addEventListener("change", () => {
+  if (colorScheme.value === "system") refreshThemeDependentViews();
+});
 flowButton.addEventListener("click", () => setFlowOpen(flowPanel.hidden));
 closeFlow.addEventListener("click", () => setFlowOpen(false));
 scenarioDetailToggle.addEventListener("click", toggleScenarioDetail);
@@ -232,6 +257,8 @@ splitter.addEventListener("pointerdown", beginResize);
 splitter.addEventListener("pointermove", continueResize);
 splitter.addEventListener("pointerup", endResize);
 splitter.addEventListener("keydown", resizeWithKeyboard);
+collapseEntities.addEventListener("click", collapseEntityTree);
+expandSelected.addEventListener("click", expandSelectedEntityPath);
 
 async function loadPresentation(): Promise<void> {
   const response = await fetch(apiPath("/api/presentation"));
@@ -273,7 +300,8 @@ function createScenarioCatalog(): DocumentFragment {
     const areaTitle = document.createElement("strong");
     areaTitle.textContent = area.title;
     const areaCount = document.createElement("span");
-    areaCount.textContent = String(area.capabilities.reduce((total, capability) => total + capability.scenarioIds.length, 0));
+    const scenarioCount = area.capabilities.reduce((total, capability) => total + capability.scenarioIds.length, 0);
+    areaCount.textContent = `${scenarioCount} scenario${scenarioCount === 1 ? "" : "s"}`;
     areaHeading.append(areaTitle, areaCount);
     areaSection.append(areaHeading);
     if (area.description) {
@@ -289,7 +317,7 @@ function createScenarioCatalog(): DocumentFragment {
       const capabilityTitle = document.createElement("strong");
       capabilityTitle.textContent = capability.title;
       const capabilityCount = document.createElement("span");
-      capabilityCount.textContent = String(capability.scenarioIds.length);
+      capabilityCount.textContent = `${capability.scenarioIds.length} scenario${capability.scenarioIds.length === 1 ? "" : "s"}`;
       heading.append(capabilityTitle, capabilityCount);
       const promise = document.createElement("p");
       promise.textContent = capability.promise;
@@ -311,6 +339,7 @@ function createScenarioTreeItem(scenario: CodeScenario): HTMLButtonElement {
   button.className = "scenario-tree-item";
   button.dataset.scenarioId = scenario.id;
   button.classList.toggle("selected", scenario.id === selectedScenarioId);
+  button.classList.toggle("related", selectedId !== undefined && scenario.participants.some((participant) => participant.blockId === selectedId));
   const marker = document.createElement("span");
   marker.className = "scenario-tree-marker";
   marker.textContent = "●";
@@ -350,6 +379,35 @@ function createBlockTree(): DocumentFragment {
   const roots = chunkElements.filter((block) => block.parentId === undefined);
   roots.forEach((root) => fragment.append(createBlockNode(root, 0)));
   return fragment;
+}
+
+function collapseEntityTree(): void {
+  elements.querySelectorAll<HTMLElement>(".block-children").forEach((branch) => { branch.hidden = true; });
+  elements.querySelectorAll<HTMLButtonElement>(".block-toggle:not(:disabled)").forEach((toggle) => {
+    toggle.textContent = "▸";
+    toggle.setAttribute("aria-label", toggle.getAttribute("aria-label")?.replace(/^Collapse /, "Expand ") ?? "Expand entity");
+  });
+}
+
+function expandSelectedEntityPath(): void {
+  const selected = selectedId === undefined
+    ? undefined
+    : elements.querySelector<HTMLElement>(`[data-element-id="${CSS.escape(selectedId)}"]`);
+  if (!selected) return;
+  let ancestor = selected.parentElement;
+  while (ancestor && ancestor !== elements) {
+    if (ancestor.classList.contains("block-children")) {
+      ancestor.hidden = false;
+      const owner = ancestor.parentElement;
+      const toggle = owner?.querySelector<HTMLButtonElement>(":scope > .block-row > .block-toggle");
+      if (toggle) {
+        toggle.textContent = "▾";
+        toggle.setAttribute("aria-label", toggle.getAttribute("aria-label")?.replace(/^Expand /, "Collapse ") ?? "Collapse entity");
+      }
+    }
+    ancestor = ancestor.parentElement;
+  }
+  selected.scrollIntoView({ block: "nearest" });
 }
 
 function createBlockNode(block: ChunkView["elements"][number], depth: number): HTMLElement {
@@ -468,10 +526,10 @@ function renderEntityMap(): void {
       {
         selector: "node",
         style: {
-          "background-color": "#1c2928",
-          "border-color": "#456f66",
+          "background-color": themeToken("--map-node"),
+          "border-color": themeToken("--map-border"),
           "border-width": 1,
-          color: "#cdd8dc",
+          color: themeToken("--map-text"),
           label: "data(label)",
           "font-family": "ui-monospace, SFMono-Regular, Menlo, monospace",
           "font-size": 10,
@@ -484,10 +542,10 @@ function renderEntityMap(): void {
       {
         selector: "node:selected",
         style: {
-          "background-color": "#25433d",
-          "border-color": "#73c7b0",
+          "background-color": themeToken("--map-selected"),
+          "border-color": themeToken("--accent"),
           "border-width": 2,
-          color: "#eef5f3"
+          color: themeToken("--map-selected-text")
         }
       },
       {
@@ -495,8 +553,8 @@ function renderEntityMap(): void {
         style: {
           "curve-style": "taxi",
           "taxi-direction": "downward",
-          "line-color": "#3b4a50",
-          "target-arrow-color": "#3b4a50",
+          "line-color": themeToken("--map-edge"),
+          "target-arrow-color": themeToken("--map-edge"),
           "target-arrow-shape": "triangle",
           width: 1
         }
@@ -515,6 +573,31 @@ function renderEntityMap(): void {
   });
   entityMap.on("tap", "node", (event) => void showElement(event.target.id()));
   selectEntityMapNode(selectedId);
+}
+
+function readThemeChoice(): ThemeChoice {
+  const stored = localStorage.getItem(themeStorageKey) as ThemeChoice | null;
+  return stored !== null && themeChoices.has(stored) ? stored : "system";
+}
+
+function applyTheme(choice: ThemeChoice): void {
+  const resolved = themeChoices.has(choice) ? choice : "system";
+  if (resolved === "system") document.documentElement.removeAttribute("data-theme");
+  else document.documentElement.dataset.theme = resolved;
+  colorScheme.value = resolved;
+  localStorage.setItem(themeStorageKey, resolved);
+  refreshThemeDependentViews();
+}
+
+function refreshThemeDependentViews(): void {
+  requestAnimationFrame(() => {
+    if (chunkElements.length > 0) renderEntityMap();
+    editor?.requestMeasure();
+  });
+}
+
+function themeToken(name: string): string {
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 }
 
 function selectEntityMapNode(id: string | undefined): void {
@@ -823,6 +906,9 @@ function createElementButton(element: ChunkView["elements"][number]): HTMLButton
   const button = document.createElement("button");
   button.type = "button";
   button.dataset.elementId = element.id;
+  button.classList.toggle("scenario-participant", selectedScenarioId !== undefined
+    && scenarios.some((scenario) => scenario.id === selectedScenarioId
+      && scenario.participants.some((participant) => participant.blockId === element.id)));
   button.setAttribute("aria-describedby", "entity-tooltip");
   button.setAttribute("aria-label", `${element.symbol}, ${element.role}, ${element.kind}, ${element.path}${kindLabels ? `, Code types: ${kindLabels}` : ""}`);
   button.innerHTML = `<strong>${escapeHtml(presentation.name)}</strong><span class="element-meta"><span>${element.kind}</span><span class="review-markers" aria-hidden="true">${kinds.map(reviewMarker).join("")}</span></span><small>${escapeHtml(presentation.context)}</small>`;
@@ -1072,6 +1158,7 @@ async function showElement(id: string): Promise<void> {
   renderElement(element, true);
   renderRelatedScenarios(id);
   renderEntityScenarios(id);
+  renderScenarioHierarchy();
 }
 
 function renderEntityScenarios(blockId: string): void {
@@ -1103,6 +1190,7 @@ function renderEntityScenarios(blockId: string): void {
 
 function openScenario(scenarioId: string): void {
   selectedScenarioId = scenarioId;
+  elements.replaceChildren(createBlockTree());
   setSidebarView("scenarios");
   scenarioDetailPanel.classList.remove("collapsed");
   scenarioDetailToggle.setAttribute("aria-expanded", "true");
@@ -1114,7 +1202,7 @@ function openScenario(scenarioId: string): void {
 
 function renderRelatedScenarios(blockId: string): void {
   const related = scenarios.filter((scenario) => scenario.participants.some((participant) => participant.blockId === blockId));
-  relatedScenarios.replaceChildren(...related.map((scenario) => {
+  const visible = related.slice(0, 2).map((scenario) => {
     const button = document.createElement("button");
     button.type = "button";
     button.textContent = scenario.title;
@@ -1122,7 +1210,17 @@ function renderRelatedScenarios(blockId: string): void {
       openScenario(scenario.id);
     });
     return button;
-  }));
+  });
+  if (related.length > visible.length) {
+    const overflow = document.createElement("button");
+    overflow.type = "button";
+    overflow.className = "related-scenarios-more";
+    overflow.textContent = `+${related.length - visible.length}`;
+    overflow.title = related.slice(visible.length).map((scenario) => scenario.title).join("\n");
+    overflow.addEventListener("click", () => setSidebarView("scenarios"));
+    visible.push(overflow);
+  }
+  relatedScenarios.replaceChildren(...visible);
 }
 
 function renderElement(element: ElementView, inChunk: boolean): void {
@@ -1130,7 +1228,12 @@ function renderElement(element: ElementView, inChunk: boolean): void {
   const focusRanges = segments.flatMap((segment) => segment.ranges);
   currentView = { element, inChunk };
   backButton.disabled = backStack.length === 0;
-  locationBar.textContent = `${inChunk ? "" : "Referenced · "}${element.path} · ${element.symbol}`;
+  const fn = functions.find((candidate) => candidate.path === element.path && candidate.symbol === element.symbol);
+  const owner = fn === undefined ? undefined : chunkElements.find((candidate) => candidate.id === fn.ownerBlockId);
+  const breadcrumb = owner === undefined
+    ? focusedSymbol(element.symbol)
+    : `${focusedSymbol(owner.symbol)} › ${focusedSymbol(element.symbol)}()`;
+  locationBar.textContent = `${inChunk ? "" : "Referenced · "}${element.path} · ${breadcrumb}`;
   document.querySelectorAll("#elements button").forEach((button) => {
     button.classList.toggle("selected", inChunk && (button as HTMLElement).dataset.elementId === element.id);
   });
